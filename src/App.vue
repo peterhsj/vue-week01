@@ -12,6 +12,11 @@
     {id: 8,name: '抹茶拿鐵',title: '抹茶與鮮奶的絕配',price: 60,quantity: 20},
   ]);
   
+  const tempAdd = ref({
+    name: null,
+    title: null,
+    price: null,
+  });
   const tempEdit = ref({});
 
   const delCount = (product) => {
@@ -27,11 +32,12 @@
   const addProduct = () => {
     products.value.push({
       id: new Date().getTime(),
-      name: '',
-      title: '',
-      price: 0,
+      name: tempAdd.value.name,
+      title: tempAdd.value.title,
+      price: tempAdd.value.price,
       quantity: 0
     });
+    tempAdd.value = {};
   };
 
   const delProduct = (product) => {
@@ -54,6 +60,10 @@
 
 <template>
   <h1>Week 01</h1>
+  <h2>新增</h2>
+  品項：<input type="text" v-model="tempAdd.name"><br>
+  描述：<input type="text" v-model="tempAdd.title"><br>
+  價格：<input type="number" v-model="tempAdd.price">
   <button type="button" @click="addProduct">新增</button>
   <hr>
   <table>
