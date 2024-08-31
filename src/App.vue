@@ -50,7 +50,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="(product, index) in products">
+    <tr v-for="(product, index) in products" :key="index">
       <td width="200">
         <input v-if="product.isEdit" type="text" v-model="product.tempName">
         <span v-else>{{ product.name }}</span>
