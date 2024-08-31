@@ -11,12 +11,8 @@
     {id: 7,name: '芒果綠茶',title: '芒果與綠茶的獨特風味',price: 55,quantity: 18},
     {id: 8,name: '抹茶拿鐵',title: '抹茶與鮮奶的絕配',price: 60,quantity: 20},
   ]);
-
-  products.value.map(product => {
-    product.isEdit = false;
-    product.tempName = product.name;
-    return product;
-  })
+  
+  const tempEdit = ref({});
 
   const delCount = (product) => {
     if (product.quantity > 0) {
@@ -26,15 +22,6 @@
 
   const addCount = (product) => {
     product.quantity += 1;
-  };
-
-  const edit = (product) => {
-    product.isEdit = true;
-  };
-
-  const save = (product) => {
-    product.isEdit = false;
-    product.name = product.tempName;
   };
 
   const addProduct = () => {
@@ -49,8 +36,19 @@
 
   const delProduct = (product) => {
     const index = products.value.findIndex(item => item.id === product.id)
-    console.log({index})
     products.value.splice(index, 1);
+  };
+
+  const preparEdit = (product) => {
+    tempEdit.value = { ...product };
+  };
+  
+  const confirmEdit = () => {
+    const index = products.value.findIndex(item => item.id === tempEdit.value.id);
+    const { name, title } = tempEdit.value;
+    products.value[index].name = name;
+    products.value[index].title = title;
+    tempEdit.value = {};
   };
 </script>
 
@@ -61,7 +59,7 @@
   <table>
     <thead>
       <tr>
-        <th scope="col" colspan="2">品項</th>
+        <th scope="col">品項</th>
         <th scope="col">描述</th>
         <th scope="col">價格</th>
         <th scope="col">庫存</th>
@@ -71,12 +69,7 @@
     <tbody>
       <tr v-for="(product, index) in products" :key="index">
         <td width="200">
-          <input v-if="product.isEdit" type="text" v-model="product.tempName">
-          <span v-else>{{ product.name }}</span>
-        </td>
-        <td>
-          <button v-if="product.isEdit" type="button" @click="save(product)">儲存</button>
-          <button v-else type="button" @click="edit(product)">編輯</button>
+          <span>{{ product.name }}</span>
         </td>
         <td><small>{{ product.title }}</small></td>
         <td>{{ product.price }}</td>
@@ -87,10 +80,20 @@
         </td>
         <td>
           <button type="button" @click="delProduct(product)">刪除</button>
+          <button type="button" @click="preparEdit(product)">編輯</button>
         </td>
       </tr>
     </tbody>
   </table>
+  <hr>
+  <div v-if="tempEdit.id">
+    <h2>編輯</h2>
+    當前編輯物件：<br>
+    品項：<input type="text" v-model="tempEdit.name"><br>
+    描述：<input type="text" v-model="tempEdit.title">
+    <button type="button" @click="confirmEdit">確認編輯</button>
+    <button type="button" @click="tempEdit = {}">取消編輯</button>
+  </div>
 </template>
 
 <style scoped>
